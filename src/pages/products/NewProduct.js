@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { CustomeInputeField } from "../../components/custom-inpute-field/CustomeInputeField";
+import { CustomeSelect } from "../../components/custom-select/CustomeSelect";
+import { fetchCats } from "../category/categoryAction";
 import { AdminLayout } from "../layout/AdminLayout";
 import { postProductAction } from "./productAction";
 
+const initialState = {
+  status: "inactive",
+};
 export const NewProduct = () => {
   const dispatch = useDispatch();
-  const [formDt, setFormDt] = useState({});
+  const [formDt, setFormDt] = useState(initialState);
   const [newImages, setNewImages] = useState([]);
+
+  const { cats } = useSelector((state) => state.category);
+
+  useEffect(() => {
+    !cats.length && dispatch(fetchCats());
+  }, [cats.length, dispatch]);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -118,6 +129,8 @@ export const NewProduct = () => {
           <Form.Group className="mb-3">
             <Form.Check name="status" type="switch" label="Status" />
           </Form.Group>
+
+          <CustomeSelect args={cats} func={handleOnChange} name="parentCat" />
 
           {inputes.map((item, i) => (
             <CustomeInputeField

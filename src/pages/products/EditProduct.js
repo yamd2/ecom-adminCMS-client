@@ -3,6 +3,8 @@ import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { CustomeInputeField } from "../../components/custom-inpute-field/CustomeInputeField";
+import { CustomeSelect } from "../../components/custom-select/CustomeSelect";
+import { fetchCats } from "../category/categoryAction";
 import { AdminLayout } from "../layout/AdminLayout";
 import { getSelectedProductAction, updateProductAction } from "./productAction";
 
@@ -14,13 +16,18 @@ export const EditProduct = () => {
 
   const [imgToDelete, setImgToDelete] = useState([]);
 
+  const { cats } = useSelector((state) => state.category);
   const { selectedProd } = useSelector((state) => state.product);
 
   useEffect(() => {
-    !selectedProd._id && dispatch(getSelectedProductAction(_id));
+    dispatch(getSelectedProductAction(_id));
 
     setFormDt(selectedProd);
   }, [dispatch, _id, selectedProd]);
+
+  useEffect(() => {
+    !cats.length && dispatch(fetchCats());
+  }, [cats.length, dispatch]);
 
   const handleOnChange = (e) => {
     let { checked, name, value } = e.target;
@@ -162,7 +169,7 @@ export const EditProduct = () => {
   return (
     <AdminLayout>
       <div className="mb-3">
-        <div className="py-3 fs-2">New Product</div>
+        <div className="py-3 fs-2">Update Product</div>
 
         <Link to="/products">
           {" "}
@@ -180,6 +187,14 @@ export const EditProduct = () => {
               onChange={handleOnChange}
             />
           </Form.Group>
+
+          <CustomeSelect
+            label="Category"
+            args={cats}
+            func={handleOnChange}
+            name="parentCat"
+            selectedCat={selectedProd.parentCat}
+          />
 
           {inputes.map((item, i) => (
             <CustomeInputeField
