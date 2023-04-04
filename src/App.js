@@ -40,9 +40,9 @@ function App() {
           <Route
             path="register"
             element={
-              <PrivateRouter>
-                <RegisterPage />
-              </PrivateRouter>
+              // <PrivateRouter>
+              <RegisterPage />
+              // </PrivateRouter>
             }
           />
           <Route
